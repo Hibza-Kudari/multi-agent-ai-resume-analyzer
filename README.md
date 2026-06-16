@@ -35,6 +35,10 @@ An AI-powered career assistant built with Python, Streamlit, Ollama, OCR, ATS-ba
 
 ![AI Feedback](screenshots/ai_analysis.png)
 
+### Interview Questions Generator
+
+![Interview Questions](screenshots/interview_questions.png)
+
 ## Tech Stack
 
 * Python
