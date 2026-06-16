@@ -4,6 +4,7 @@ import plotly.express as px
 from skills import SKILLS
 from ocr_helper import extract_text_from_pdf
 from ollama_helper import get_ai_feedback
+from agents.interview_agent import interview_agent
 
 # ----------------------------------
 # PAGE CONFIG
@@ -381,3 +382,36 @@ if uploaded_file:
                 feedback,
                 file_name="resume_feedback.txt"
             )
+
+            st.divider()
+
+# ----------------------------------
+# INTERVIEW PREPARATION
+# ----------------------------------
+
+st.subheader("📝 Interview Preparation")
+
+if st.button("Generate Interview Questions"):
+
+    with st.spinner(
+        "Generating Interview Questions..."
+    ):
+
+        questions = interview_agent(
+            text,
+            job_description
+        )
+
+        st.success(
+            "Questions Generated Successfully"
+        )
+
+        st.write(questions)
+
+        st.download_button(
+            "📥 Download Questions",
+            questions,
+            file_name="interview_questions.txt"
+        )
+
+            

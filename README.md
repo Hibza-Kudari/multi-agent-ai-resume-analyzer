@@ -1,6 +1,6 @@
-# AI Resume Analyzer
+# Multi-Agent AI Resume Analyzer
 
-An AI-powered Resume Analyzer built with Python, Streamlit, Ollama, EasyOCR, and ATS-based skill matching.
+An AI-powered career assistant built with Python, Streamlit, Ollama, OCR, ATS-based skill matching, and autonomous AI agents for resume analysis, interview preparation, and career guidance.
 
 ## Features
 
@@ -11,6 +11,9 @@ An AI-powered Resume Analyzer built with Python, Streamlit, Ollama, EasyOCR, and
 * Job Description Matching
 * Missing Skills Detection
 * AI-Powered Resume Feedback using Ollama
+* Personalized Interview Question Generator
+* Download AI Feedback
+* Download Interview Questions
 * Interactive Dashboard
 * Visual Skill Match Analysis
 
@@ -56,17 +59,41 @@ streamlit run app.py
 ## Project Structure
 
 ```text
-app.py
-ocr_helper.py
-ollama_helper.py
-skills.py
-requirements.txt
-screenshots/
+src/
+│
+├── agents/
+│   ├── ats_agent.py
+│   ├── skill_gap_agent.py
+│   ├── interview_agent.py
+│   └── supervisor_agent.py
+│
+├── app.py
+├── ocr_helper.py
+├── ollama_helper.py
+├── skills.py
+├── requirements.txt
+│
+└── screenshots/
 ```
+## AI Interview Preparation
+
+Generate personalized interview questions based on:
+
+- Resume content
+- Candidate skills
+- Projects mentioned in the resume
+- Job Description requirements
+
+Question Categories:
+
+- Technical Questions
+- Project-Based Questions
+- HR Questions
+
+Powered by Ollama (Llama 3.2).
 
 ## Future Improvements
 
-* Interview Question Generator
 * Resume Recommendations
 * PDF Report Export
 * Multi-Resume Comparison
