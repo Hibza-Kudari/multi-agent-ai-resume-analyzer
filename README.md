@@ -1,15 +1,23 @@
-# Multi-Agent AI Resume Analyzer
+# 🤖 Multi-Agent AI Resume Analyzer
 
-An intelligent AI-powered career assistant built using Python, Streamlit, Ollama, OCR, ATS-based resume evaluation, and autonomous AI agents. The system analyzes resumes, identifies skill gaps, evaluates ATS compatibility, generates personalized interview questions, and provides actionable career recommendations.
+Multi-Agent AI Resume Analyzer is an AI-powered career assistant that combines OCR, Large Language Models (Ollama Llama 3.2), and a collaborative multi-agent architecture to automate resume screening and career guidance.
 
----
+The system analyzes resumes against job descriptions, dynamically extracts role requirements, evaluates ATS compatibility, identifies skill gaps, generates personalized interview questions, and provides actionable recommendations. Unlike traditional ATS tools, the analyzer supports both technical and non-technical roles through domain-agnostic job requirement extraction and confidence-aware scoring.
 
-## Overview
+## 🚀 Features
 
-Multi-Agent AI Resume Analyzer leverages OCR, Natural Language Processing (NLP), Large Language Models (Ollama Llama 3.2), and a collaborative multi-agent architecture to automate resume screening and career guidance.
+### 📄 Resume Parsing
+- Extracts text directly from PDF resumes using PyMuPDF.
+- Automatically falls back to EasyOCR for scanned or image-based resumes.
+- Supports both digital and scanned PDF formats.
 
-The application simulates a real-world AI workflow where specialized agents work together to evaluate resumes, match job requirements, identify missing skills, and prepare candidates for interviews.
-
+### 🎯 ATS & Job Match Analysis
+- Dynamically extracts role requirements from job descriptions.
+- Computes ATS compatibility and job-match scores.
+- Domain-Agnostic ATS Analysis and Multi-Agent Decision Workflow
+- Works across technical and non-technical domains (AI/ML, HR, Marketing, Finance, etc.).
+- Includes confidence-aware scoring to prevent misleading results from insufficient job description data.
+- Personalized Interview Preparation and AI-Powered Career Feedback
 ---
 ---
 
@@ -36,16 +44,17 @@ The application simulates a real-world AI workflow where specialized agents work
 
 * Upload Resume PDFs
 * OCR support for scanned resumes
-* Resume text extraction
-* ATS Resume Scoring
-* Resume quality evaluation
+* Resume text extraction using PyMuPDF and EasyOCR
+* ATS Compatibility Analysis
+* Confidence-Aware Job Matching
+* Resume Quality Evaluation
 
 ### Skill Assessment
 
-* Skill Extraction
+* Dynamic Skill Extraction from Job Descriptions
+* Domain-Agnostic Skill Gap Analysis
 * Missing Skills Detection
 * Job Description Matching
-* Skill Gap Analysis
 * Learning Recommendations
 
 ### AI-Powered Career Guidance
@@ -53,6 +62,7 @@ The application simulates a real-world AI workflow where specialized agents work
 * AI Resume Feedback using Ollama (Llama 3.2)
 * Personalized Career Recommendations
 * Resume Improvement Suggestions
+* Career Readiness Assessment
 
 ### Interview Preparation
 
@@ -65,29 +75,33 @@ The application simulates a real-world AI workflow where specialized agents work
 ### Dashboard & Reporting
 
 * Interactive Dashboard
+* ATS Compatibility Metrics
 * Visual Skill Match Analysis
 * Download AI Feedback
 * Download Interview Questions
 
 ---
 
-## Multi-Agent Architecture
-
-The system consists of four specialized AI agents that collaborate to analyze resumes and generate career insights.
+### Multi-Agent Workflow
+- Supervisor agent routes tasks based on intermediate analysis.
+- ATS Analysis Agent evaluates resume-job fit.
+- Skill Gap Agent identifies missing skills from dynamically extracted job requirements.
+- Interview Agent generates role-specific interview questions.
 
 ### ATS Agent
 
-* Calculates ATS score
-* Evaluates resume quality
-* Matches resumes against job descriptions
-* Measures keyword relevance
+* Calculates ATS compatibility
+* Analyzes resume-job alignment
+* Performs confidence-aware job matching
+* Detects low-information job descriptions
+* Generates job match metrics
 
 ### Skill Gap Agent
 
-* Extracts technical and soft skills
-* Identifies missing skills
-* Recommends learning areas
-* Suggests improvements
+* Extracts role requirements dynamically
+* Identifies missing skills from job descriptions
+* Performs domain-agnostic skill-gap analysis
+* Suggests learning priorities
 
 ### Interview Agent
 
@@ -95,10 +109,12 @@ The system consists of four specialized AI agents that collaborate to analyze re
 * Creates technical assessments
 * Produces HR interview questions
 * Builds project-based evaluations
+* Adapts questions to job requirements
 
 ### Supervisor Agent
 
 * Coordinates all agents
+* Routes analysis workflows
 * Aggregates agent outputs
 * Generates final recommendations
 * Produces consolidated analysis reports
@@ -146,8 +162,8 @@ Final Career Report
 
 * Ollama
 * Llama 3.2
-* Prompt Engineering
-* Multi-Agent Systems
+* OCR-Based Resume Parsing
+* Dynamic Skill Extraction
 
 ### NLP & Resume Processing
 
@@ -159,6 +175,8 @@ Final Career Report
 ### Data Visualization
 
 * Plotly
+* Pandas
+* NumPy
 
 ### Development Tools
 
@@ -186,13 +204,13 @@ Final Career Report
 
 ## Performance
 
-* Supports PDF Resume Analysis
-* Processes both digital and scanned resumes
-* Extracts 100+ common technical skills
-* Generates personalized interview questions
-* Performs ATS-based job matching
-* Provides AI-generated career feedback
-* Detects missing skills based on job descriptions
+* Supports Digital and Scanned PDF Resumes
+* Domain-Agnostic Resume Evaluation
+* Dynamic Skill Extraction from Job Descriptions
+* Confidence-Aware ATS Scoring
+* Personalized Interview Question Generation
+* Multi-Agent Career Guidance Workflow
+* Automated Skill Gap Detection
 
 ---
 
