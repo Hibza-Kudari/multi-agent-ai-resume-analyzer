@@ -5,6 +5,7 @@ from skills import SKILLS
 from ocr_helper import extract_text_from_pdf
 from ollama_helper import get_ai_feedback
 from agents.interview_agent import interview_agent
+from skill_extractor import extract_skills_from_jd
 
 # ----------------------------------
 # PAGE CONFIG
@@ -169,46 +170,41 @@ if uploaded_file:
 
     resume_score = min(score, 100)
 
+# ----------------------------------
+    # JOB DESCRIPTION ANALYSIS (dynamic, any role)
     # ----------------------------------
-    # JOB DESCRIPTION ANALYSIS
-    # ----------------------------------
 
-    jd_text = job_description.lower()
-
-    jd_skills = []
-
-    for skill in SKILLS:
-
-        if skill.lower() in jd_text:
-            jd_skills.append(skill)
+    with st.spinner("Analyzing job description requirements..."):
+        jd_skills = extract_skills_from_jd(job_description)
 
     matched_skills = []
     missing_skills = []
 
     for skill in jd_skills:
-
-        if skill in found_skills:
+        if skill.lower() in resume_text:
             matched_skills.append(skill)
-
         else:
             missing_skills.append(skill)
 
     # ----------------------------------
-    # MATCH SCORE
+    # MATCH SCORE + CONFIDENCE
     # ----------------------------------
 
+    extraction_failed = bool(job_description.strip()) and len(jd_skills) == 0
+
     if len(jd_skills) > 0:
-
-        match_score = int(
-            len(matched_skills)
-            /
-            len(jd_skills)
-            * 100
-        )
-
+        match_score = int(len(matched_skills) / len(jd_skills) * 100)
     else:
-
         match_score = 0
+
+    if len(jd_skills) >= 8:
+        confidence_label = "High"
+    elif len(jd_skills) >= 4:
+        confidence_label = "Medium"
+    elif len(jd_skills) > 0:
+        confidence_label = "Low"
+    else:
+        confidence_label = "N/A"
 
     # ----------------------------------
     # METRICS
@@ -219,28 +215,31 @@ if uploaded_file:
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        st.metric(
-            "📊 Resume Score",
-            f"{resume_score}/100"
-        )
+        st.metric("🎯 Job Match", f"{match_score}%")
 
     with col2:
-        st.metric(
-            "🎯 Job Match",
-            f"{match_score}%"
-        )
+        st.metric("📡 Match Confidence", confidence_label)
 
     with col3:
-        st.metric(
-            "🧠 Skills Found",
-            len(found_skills)
+        st.metric("📋 Skills Required", len(jd_skills))
+
+    if extraction_failed:
+        st.error(
+            "⚠️ Couldn't extract skill requirements from this job "
+            "description. Try pasting a more detailed JD."
+        )
+    elif confidence_label == "Low":
+        st.warning(
+            f"⚠️ Only {len(jd_skills)} skill(s) detected in the job "
+            f"description. The Job Match score may not be reliable — "
+            f"try pasting a more detailed job description."
         )
 
     st.divider()
 
-   # ----------------------------------
-# SKILLS FOUND
-# ----------------------------------
+    # ----------------------------------
+    # SKILLS FOUND
+    # ----------------------------------
 
     st.subheader("🧠 Skills Found")
 
@@ -327,9 +326,10 @@ if uploaded_file:
         )
 
     st.divider()
+
     # ----------------------------------
-# PIE CHART
-# ----------------------------------
+    # PIE CHART
+    # ----------------------------------
 
     chart_data = {
         "Category": ["Matched", "Missing"],
@@ -413,5 +413,3 @@ if st.button("Generate Interview Questions"):
             questions,
             file_name="interview_questions.txt"
         )
-
-            
