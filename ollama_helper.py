@@ -1,37 +1,36 @@
-import requests
+import os
 
-OLLAMA_URL = "http://localhost:11434/api/generate"
+from dotenv import load_dotenv
+from langchain_groq import ChatGroq
+
+load_dotenv()
+
+llm = ChatGroq(
+    model=os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile"),
+    api_key=os.getenv("GROQ_API_KEY"),
+    temperature=0,
+)
 
 
 def ask_ollama(prompt):
+    """
+    Kept the same function name so the rest of the project
+    doesn't need to change.
+    """
 
     try:
-
-        response = requests.post(
-            OLLAMA_URL,
-            json={
-                "model": "llama3.2:latest",
-                "prompt": prompt,
-                "stream": False
-            },
-            timeout=300
-        )
-
-        response.raise_for_status()
-
-        return response.json()["response"]
+        response = llm.invoke(prompt)
+        return response.content
 
     except Exception as e:
-
-        return f"❌ Ollama Error: {str(e)}"
+        return f"❌ Groq Error: {e}"
 
 
 def get_ai_feedback(
     resume_text,
     job_description,
-    missing_skills
+    missing_skills,
 ):
-
     prompt = f"""
 You are an expert ATS Resume Reviewer.
 

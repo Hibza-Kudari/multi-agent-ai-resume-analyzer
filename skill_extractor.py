@@ -1,17 +1,23 @@
 import json
 import re
-import ollama
+import os
+
+from dotenv import load_dotenv
+from langchain_groq import ChatGroq
+
+load_dotenv()
+
+llm = ChatGroq(
+    model=os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile"),
+    api_key=os.getenv("GROQ_API_KEY"),
+    temperature=0,
+)
 
 
-def extract_skills_from_jd(job_description, model="llama3.2"):
+def extract_skills_from_jd(job_description):
     """
-    Uses the local LLM to extract a clean list of required skills
-    from ANY job description, regardless of role/domain (engineering,
-    HR, sales, marketing, etc.) — replaces the fixed SKILLS list
-    approach for JD-side skill detection.
-
-    Returns a list of skill strings, e.g. ["Python", "Recruitment",
-    "Excel", "Stakeholder Management"].
+    Uses Groq to extract a clean list of required skills
+    from any job description.
     """
 
     if not job_description or not job_description.strip():
@@ -22,10 +28,9 @@ Extract the key skills, tools, and qualifications required for this job.
 Include both technical and non-technical skills relevant to the role
 (e.g. software tools, soft skills, domain knowledge, certifications).
 
-Respond ONLY with a JSON array of short skill names, nothing else.
-No explanations, no markdown, no preamble.
+Respond ONLY with a JSON array of short skill names.
 
-Example format:
+Example:
 ["Python", "Recruitment", "Excel", "Communication"]
 
 Job Description:
@@ -33,36 +38,39 @@ Job Description:
 """
 
     try:
-        response = ollama.chat(
-            model=model,
-            messages=[{"role": "user", "content": prompt}],
-        )
+        response = llm.invoke(prompt)
 
-        raw = response["message"]["content"].strip()
+        raw = response.content.strip()
 
-        # Strip markdown code fences if the model added them anyway
-        raw = re.sub(r"^```(?:json)?|```$", "", raw, flags=re.MULTILINE).strip()
+        # Remove markdown code fences if present
+        raw = re.sub(
+            r"^```(?:json)?|```$",
+            "",
+            raw,
+            flags=re.MULTILINE,
+        ).strip()
 
         skills = json.loads(raw)
 
         if not isinstance(skills, list):
             return []
 
-        # Clean and dedupe, preserve original casing for display
         cleaned = []
         seen = set()
 
-        for s in skills:
-            if not isinstance(s, str):
+        for skill in skills:
+            if not isinstance(skill, str):
                 continue
-            s_clean = s.strip()
-            key = s_clean.lower()
-            if s_clean and key not in seen:
-                cleaned.append(s_clean)
+
+            skill = skill.strip()
+            key = skill.lower()
+
+            if skill and key not in seen:
+                cleaned.append(skill)
                 seen.add(key)
 
         return cleaned
 
-    except (json.JSONDecodeError, KeyError, Exception) as e:
+    except Exception as e:
         print("Skill extraction failed:", e)
         return []
