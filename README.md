@@ -8,7 +8,7 @@ Unlike traditional ATS tools that rely on fixed keyword matching, this project u
 
 ## 🚀 Live Demo
 
-**Live App:** https://YOUR-STREAMLIT-LINK.streamlit.app
+**Live App:** https://multi-agent-ai-resume-analyzer.streamlit.app/
 
 **GitHub Repository:** https://github.com/Hibza-Kudari/resume_analyzer_ATS
 
