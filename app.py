@@ -1,10 +1,9 @@
 import streamlit as st
 import plotly.express as px
+from agents.supervisor_agent import supervisor_agent
 
 from skills import SKILLS
 from ocr_helper import extract_text_from_pdf
-from ollama_helper import get_ai_feedback
-from agents.interview_agent import interview_agent
 from skill_extractor import extract_skills_from_jd
 
 # ----------------------------------
@@ -83,6 +82,13 @@ div[data-testid="metric-container"] {
 """, unsafe_allow_html=True)
 
 # ----------------------------------
+# SESSION STATE INIT
+# ----------------------------------
+
+if "report" not in st.session_state:
+    st.session_state.report = None
+
+# ----------------------------------
 # TITLE
 # ----------------------------------
 
@@ -133,6 +139,12 @@ if uploaded_file:
 
     resume_text = text.lower()
 
+    # Run supervisor agent and store in session state
+    st.session_state.report = supervisor_agent(
+        resume_text=text,
+        job_description=job_description,
+    )
+
     st.success(
         "✅ Resume extracted successfully!"
     )
@@ -170,7 +182,7 @@ if uploaded_file:
 
     resume_score = min(score, 100)
 
-# ----------------------------------
+    # ----------------------------------
     # JOB DESCRIPTION ANALYSIS (dynamic, any role)
     # ----------------------------------
 
@@ -353,27 +365,23 @@ if uploaded_file:
 
     st.divider()
 
-    # ----------------------------------
-    # AI FEEDBACK
-    # ----------------------------------
+# ----------------------------------
+# AI FEEDBACK  (shows once a file has been processed)
+# ----------------------------------
+
+if st.session_state.report is not None:
+
+    report = st.session_state.report
 
     st.subheader("🤖 AI Resume Review")
 
     if st.button("Generate AI Feedback"):
 
-        with st.spinner(
-            "Analyzing Resume..."
-        ):
+        with st.spinner("Analyzing Resume..."):
 
-            feedback = get_ai_feedback(
-                text,
-                job_description,
-                missing_skills
-            )
+            feedback = report["feedback"]["feedback"]
 
-            st.success(
-                "Analysis Complete"
-            )
+            st.success("Analysis Complete")
 
             st.write(feedback)
 
@@ -384,32 +392,38 @@ if uploaded_file:
             )
 
             st.divider()
+            with st.expander("🧠 Supervisor Agent Decision Log"):
 
-# ----------------------------------
-# INTERVIEW PREPARATION
-# ----------------------------------
+                for decision in report["supervisor_decisions"]:
+                    st.markdown(f"- {decision}")
 
-st.subheader("📝 Interview Preparation")
+    # ----------------------------------
+    # INTERVIEW PREPARATION
+    # ----------------------------------
 
-if st.button("Generate Interview Questions"):
+    st.subheader("📝 Interview Preparation")
 
-    with st.spinner(
-        "Generating Interview Questions..."
-    ):
+    if st.button("Generate Interview Questions"):
 
-        questions = interview_agent(
-            text,
-            job_description
-        )
+        if report.get("interview") is None:
 
-        st.success(
-            "Questions Generated Successfully"
-        )
+            st.warning(
+                "⚠️ Your resume needs improvement before interview preparation.\n\n"
+                "Review the AI feedback and improve the missing skills first."
+            )
 
-        st.write(questions)
+        else:
 
-        st.download_button(
-            "📥 Download Questions",
-            questions,
-            file_name="interview_questions.txt"
-        )
+            with st.spinner("Generating Interview Questions..."):
+
+                questions = report["interview"]
+
+                st.success("Questions Generated Successfully")
+
+                st.write(questions)
+
+                st.download_button(
+                    "📥 Download Questions",
+                    questions,
+                    file_name="interview_questions.txt",
+                )
